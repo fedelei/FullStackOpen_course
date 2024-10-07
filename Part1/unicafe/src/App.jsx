@@ -1,35 +1,103 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+const Button = ({ value, text }) => {
+  return (
+    <>
+      <button onClick={value}>{text}</button>
+    </>
+  );
+};
+
+const StatisticLine = ({ text, value }) => {
+  return (
+    <>
+      <td>
+        {text} {value}
+      </td>
+    </>
+  );
+};
+
+const Statistics = ({ good, neutral, bad }) => {
+  const total = good + neutral + bad;
+  const average = (good - bad) / total;
+  const positive = (good / total) * 100;
+  if (total === 0) {
+    return (
+      <>
+        <h2>statistics</h2>
+        <p>No feedback given</p>
+      </>
+    );
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h2>statistics</h2>
+      <table>
+        <tbody>
+          <tr>
+            <StatisticLine text="good" value={good} />
+          </tr>
+          <tr>
+            <StatisticLine text="neutral" value={neutral} />
+          </tr>
+          <tr>
+            <StatisticLine text="bad" value={bad} />
+          </tr>
+          <tr>
+            <StatisticLine text="total" value={total} />
+          </tr>
+          <tr>
+            <StatisticLine text="average" value={average} />
+          </tr>
+          <tr>
+            <StatisticLine text="positive" value={positive} />
+          </tr>
+        </tbody>
+      </table>
     </>
-  )
-}
+  );
+};
 
-export default App
+const App = () => {
+  // guarda los clics de cada botón en su propio estado
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+
+  const addGood = () => {
+    setGood(good + 1);
+  };
+  const addNeutral = () => {
+    setNeutral(neutral + 1);
+  };
+  const addBad = () => {
+    setBad(bad + 1);
+  };
+
+  return (
+    <div>
+      <h2>give feedback</h2>
+      <Button value={addGood} text="good" />
+
+      <Button value={addNeutral} text="neutral" />
+
+      <Button value={addBad} text="bad" />
+
+      <Statistics good={good} neutral={neutral} bad={bad} />
+    </div>
+  );
+};
+
+export default App;
+
+/* <tbody>
+<tr><StatisticLine text="good" value={good} /></tr>
+<tr><StatisticLine text="neutral" value={neutral} /></tr>
+<tr><StatisticLine text="bad" value={bad} /></tr>
+<tr><StatisticLine text="total" value={total} /></tr>
+<tr><StatisticLine text="average" value={average} /></tr>
+<tr><StatisticLine text="positive" value={positive} /></tr>
+</tbody>
+</table> */
