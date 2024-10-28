@@ -3,12 +3,16 @@ import Filter from "./Filter";
 import PersonForm from "./PersonForm";
 import Persons from "./Persons";
 import personServices from "./services/personServices";
+import Notification from "./Notification";
+
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [number, setNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [messageError, setMessageError] = useState(null)
+  const [messageOk, setMessageOk] = useState(null)
 
   useEffect(() => {
     personServices
@@ -56,7 +60,11 @@ const App = () => {
             );
           })
           .catch(error => {
-            alert(`Failed to update ${newName} ${error}`);
+            setMessageError("El contacto ya ha sido eliminado del servidor")
+            setTimeout(() => {
+              setMessageError(null)
+            }, 5000);
+            setPersons(persons.filter(p => p.id !== existingPerson.id))
           });
       }
     } else {
@@ -65,6 +73,10 @@ const App = () => {
       .then(response => {
         setPersons(persons.concat(response.data))
       })
+      setMessageOk("Se ha agregado exitosamente")
+      setTimeout(() => {
+        setMessageOk(null)
+      }, 5000);
       setNewName("");
       setNumber("");
     }
@@ -85,9 +97,16 @@ const App = () => {
           .suprimir(id)
           .then(() => {
             setPersons(persons.filter((p) => p.id !== id));
+            setMessageOk("Contacto eliminado satisfactoriamente")
+            setTimeout(() => {
+              setMessageOk(null)
+            }, 5000);
           })
           .catch(error => {
-            alert(`Failed to delete ${person.name}`);
+            setMessageError("Failed to delete")
+            setTimeout(() => {
+              setMessageError(null)
+            }, 5000);
           });
       }
     };
@@ -95,6 +114,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <Notification messageError={messageError} messageOk={messageOk}/>
        
       <Filter filter={filter} handleFilter={handleFilter} />
 
