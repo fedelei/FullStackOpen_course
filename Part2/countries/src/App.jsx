@@ -38,7 +38,7 @@ const App = () => {
       countriesServices
         .getWeatherByCityName(capital)
         .then(response => {
-          console.log("Weather response:", response.data); 
+          console.log("Weather response:", response.data); // Ver el contenido de la respuesta
           setWeather(response.data);
         })
         .catch(error => {
