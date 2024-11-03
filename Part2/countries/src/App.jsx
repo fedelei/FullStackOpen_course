@@ -38,11 +38,11 @@ const App = () => {
       countriesServices
         .getWeatherByCityName(capital)
         .then(response => {
-          console.log("Weather response:", response.data); // Ver el contenido de la respuesta
+          console.log("Weather response:", response.data); 
           setWeather(response.data);
         })
         .catch(error => {
-          console.error("Error fetching weather:", error); // Ver si hay algún error
+          console.error("Error fetching weather:", error);
           setWeather(null);
         });
     }
