@@ -1,7 +1,7 @@
 ***APP FULLSTACK: PHONEBOOK*** 
 LINK: https://phonebook-b2c6.onrender.com
 
-**Esta agenda telefonica sencilla, fue realizado en el marco del curso de FullStack Open, impartido por la Universidad de Helsinski- Finlandia.*** 
+***Esta agenda telefonica sencilla, fue realizado en el marco del curso de FullStack Open, impartido por la Universidad de Helsinski- Finlandia.*** 
 
 La app hace hincapie en las funcionalidades de una App fullstack, es decir en las llamadas a las API, rutas, server, integracion del Backend con el frontend. Sin embargo, el frontend esta hecho de manera muy sencilla, en tanto y en cuanto lo estetico no es el objetivo de este ejercicio.
 
