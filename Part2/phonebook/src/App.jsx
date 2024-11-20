@@ -40,15 +40,14 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault();
-  
     const existingPerson = persons.find(person => person.name === newName);
     const personsObj = { name: newName, number: number };
-
+  
     if (existingPerson) {
       const confirmUpdate = window.confirm(
         `${newName} is already added to the phonebook. Replace the old number with a new one?`
       );
-
+  
       if (confirmUpdate) {
         personServices
           .update(existingPerson.id, personsObj)
@@ -58,31 +57,48 @@ const App = () => {
                 person.id !== existingPerson.id ? person : response.data
               )
             );
+            setMessageOk("Número actualizado correctamente");
+            setTimeout(() => {
+              setMessageOk(null);
+            }, 5000);
           })
           .catch(error => {
-            setMessageError("El contacto ya ha sido eliminado del servidor")
+            const errorMessage = error.response.data.error || "Error al actualizar el contacto";
+            setMessageError(errorMessage);
             setTimeout(() => {
-              setMessageError(null)
+              setMessageError(null);
             }, 5000);
-            setPersons(persons.filter(p => p.id !== existingPerson.id))
+            
+            if (errorMessage.includes("eliminado del servidor")) {
+              setPersons(persons.filter(p => p.id !== existingPerson.id));
+            }
           });
       }
     } else {
       personServices
-      .create(personsObj)
-      .then(response => {
-        setPersons(persons.concat(response.data))
-      })
-      setMessageOk("Se ha agregado exitosamente")
-      setTimeout(() => {
-        setMessageOk(null)
-      }, 5000);
-      setNewName("");
-      setNumber("");
+        .create(personsObj)
+        .then(response => {
+          setPersons(persons.concat(response.data));
+          setMessageOk("Se ha agregado exitosamente");
+          setTimeout(() => {
+            setMessageOk(null);
+          }, 5000);
+          setNewName("");
+          setNumber("");
+        })
+        .catch(error => {
+          console.log(error.response.data.error );
+          
+          const errorMessage = error.response.data.error || "Error al agregar el contacto";
+          setMessageError(errorMessage);
+          setTimeout(() => {
+            setMessageError(null);
+          }, 5000);
+        });
     }
   };
-
-
+  
+  
 
   const personsToShow = filter
     ? persons.filter((person) =>

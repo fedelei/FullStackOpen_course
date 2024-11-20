@@ -1,36 +1,23 @@
+require('dotenv').config()
 const express = require("express");
 const morgan = require("morgan"); 
 const app = express();
 app.use(express.static('dist'))
 app.use(express.json());
 app.use(morgan('tiny'));
+const Person = require('./models/phonebook')
 
-let phonebook = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
+
+app.get('/api/phonebook', (request, response) => {
+  Person.find({}).then(contact => {
+    response.json(contact)
+  })
+})
+
 
 const getInfo = async () => {
   try {
-    const numContacts = phonebook.length;
+    const numContacts = Person.length;
 
     const currenDate = new Date();
     const dateString = currenDate.toString();
@@ -65,52 +52,89 @@ app.get("/info", async (req, res) => {
   }
 });
 
-app.get("/api/phonebook", (request, response) => {
-  response.json(phonebook);
-});
 
-app.get("/api/phonebook/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const persons = phonebook.find((person) => person.id === id);
-  if(persons){
-      console.log(persons);
-      response.json(persons);
-    
+app.get("/api/phonebook/:id", (request, response, next) => {
+ Person.findById(request.params.id)
+ .then(person => {
+  if(person){
+    response.json(person)
   } else {
     response.status(404).end()
   }
-  
+})
+ .catch(error => next(error))
 });
 
 app.post("/api/phonebook", (request, response) => {
-    console.log("Request Body:", request.body);
-    const {name, number} = request.body;
-    console.log(name);
-    
-   
-    
-    if (!name || !number) {
-        return response.status(400).send({error: "Name or number is missing"});
-    } else if(phonebook.find(contact => contact.name === name )){
-        return response.status(400).send({ error: 'name must be unique' })
-    }
-    const newContact = {
-        id: Math.random(), 
-        name,
-        number
-    };
-    phonebook.push(newContact);
-    response.json(newContact)
-  
-})
+  const { name, number } = request.body;
 
-app.delete('/api/phonebook/:id', (request, response) => {
-    const id = Number(request.params.id)
-    notes = phonebook.filter(person => person.id !== id)
-  
+  if (!name) {
+    return response.status(400).json({ error: "Name is required" });
+  }
+
+  if (!number) {
+    return response.status(400).json({ error: "Number is required" });
+  }
+
+  const numberPattern = /^\d{2,3}-\d+$/;
+  if (!numberPattern.test(number)) {
+    return response.status(400).json({ error: "Number format is invalid. It should be in the format XX-XXXXXXX or XXX-XXXXXXX" });
+  }
+
+  Person.findOne({ name })
+    .then(existingPerson => {
+      if (existingPerson) {
+        return response.status(400).json({ error: "Name must be unique" });
+      }
+
+      const newContact = new Person({ name, number });
+      return newContact.save();
+    })
+    .then(savedContact => {
+      response.json(savedContact);
+    })
+    .catch(error => {
+      console.error("Error al guardar el contacto:", error);
+      response.status(500).json({ error: 'Error al guardar el contacto' });
+    });
+});
+
+app.put('/api/phonebook/:id', (request, response, next) => {
+  const { name, number } = request.body;
+
+  const updatedPerson = { name, number };
+
+  Person.findByIdAndUpdate(request.params.id, updatedPerson, { new: true, runValidators: true, context: 'query' })
+    .then(updatedContact => {
+      if (updatedContact) {
+        response.json(updatedContact);
+      } else {
+        response.status(404).send({ error: 'El contacto no existe' });
+      }
+    })
+    .catch(error => next(error));
+});
+
+
+
+app.delete('/api/phonebook/:id', (request, response, next) => {
+  Person.findByIdAndDelete(request.params.id)
+  .then(result => {
     response.status(204).end()
   })
+  .catch(error => next(error))
+  })
 
+const errorHandler = (error, request, response, next) => {
+  console.log(error.message);
+
+  if(error.name === 'CastError'){
+    return response.status(400).send({error: 'malformated id'})
+  }
+  next(error)
+}
+
+app.use(errorHandler)
 
   const PORT = process.env.PORT || 3001
   app.listen(PORT, () => {

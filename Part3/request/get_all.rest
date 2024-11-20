@@ -1,22 +1,26 @@
 GET http://localhost:3001/api/phonebook
 ###
-POST http://localhost:3001/info HTTP/1.1
-content-type: application/json
+GET http://localhost:3001/info 
 
-{
-    "name": "sample",
-    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
-}
 
 ###
-GET http://localhost:3001/api/phonebook
+POST http://localhost:3001/api/phonebook/
 Content-Type: application/json
 
 {
- "name": "dada",
- "number": 112355
+ "name": "roman",
+ "number": "222"
 }
 ###
 
 ###
-DELETE http://localhost:3001/api/phonebook/2
+DELETE http://localhost:3001/api/phonebook/672f7f6043be7eefdf43c7c0
+
+###
+PUT http://localhost:3001/api/phonebook/673371a6a2971682ee9f3db8
+Content-Type: application/json
+
+{
+ "name": "rocco",
+ "number": "3333"
+}
