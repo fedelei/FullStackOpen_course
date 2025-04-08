@@ -1,0 +1,48 @@
+##
+GET http://localhost:3001/api/blogs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZlZGU4OCIsImlkIjoiNjc1NzhmZmYwMDdmOGYyOThmYzM5OGExIiwiaWF0IjoxNzM1MjMxNzAwfQ.s-oGP1guFtGyiFHrrSHFcIpAY06O4vVlxWAjL9e4aas
+
+###
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pY2FlbGEiLCJpZCI6IjY3NmRlYTVlYzY3YmNiYjYzZjRkNmUzZCIsImlhdCI6MTczNTI1NzA3MH0.Lghx5baki31Iez2wZQT8WzFqh0xOw4Crp-ytq7s1n-8
+  
+  {
+  "title": "Mica y fede",
+  "author": "Micaela",
+  "url": "http://example.com",
+  "likes": 5
+    
+}
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+  {
+    "name": "Mica",
+    "username": "micaela",
+    "password": "mica1234"
+   
+}
+
+###
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+  "username": "micaela",
+  "password": "mica1234"
+}
+
+###
+DELETE http://localhost:3001/api/blogs/676195e249683adb4c312acb
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZlZGU4OCIsImlkIjoiNjc1NzhmZmYwMDdmOGYyOThmYzM5OGExIiwiaWF0IjoxNzM0NDUxMTkwfQ.8FqxFGAF_ZDsE5EW178FAxUSlg2oWt0u45O6KQcFoJU
+###
+
+PUT http://localhost:3001/api/blogs/6750b21426ed28d3ecfaeb6d
+Content-Type: application/json
+
+{
+    "likes": 100
+}
